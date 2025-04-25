@@ -24,7 +24,7 @@ jobs:
       - name: Install Playwright Browsers
         run: npx playwright install --with-deps
       - name: Run Playwright tests
-        run: npx playwright test
+        run: npx playwright test --shard=${{ matrix.shardIndex }}/${{ matrix.shardTotal }}
       - uses: actions/upload-artifact@v4
         if: ${{ !cancelled() }}
         with:
@@ -50,18 +50,13 @@ jobs:
         run: npm ci
 
       - name: Merge into HTML Report
-        run: npx playwright merge-reports --reporter html ./playwright-report/playwright-report-*/index.html ./playwright-report/index.html
+        run: npx playwright merge-reports --reporter html ./playwright-report-*/index.html ./playwright-report/index.html
 
-      - name: Setup Pages
-        uses: actions/configure-pages@v5
-
-      - name: Upload HTML report for Pages
-        uses: actions/upload-pages-artifact@v3
+      - name: Upload HTML Report
+        uses: actions/upload-artifact@v4
         with:
-          name: github-pages
-          path: playwright-report
-          retention-days: 14
+          name: playwright-report
 
-      - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v4
+      - name: summary
+        run: |
+          echo "## [Playwright Report](./playwright-report/index.html)" >> $GITHUB_STEP_SUMMARY
