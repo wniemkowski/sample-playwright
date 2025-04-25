@@ -9,6 +9,10 @@ on:
 jobs:
   playwright_test:
     name: Playwright Test
+    env:
+      # Fix Firefox crash in GitHub Actions
+      # Details: https://github.com/microsoft/playwright/issues/6500#issuecomment-838515115
+      HOME: /root
     timeout-minutes: 60
     runs-on: ubuntu-latest
     container: mcr.microsoft.com/playwright:v1.52.0-noble
