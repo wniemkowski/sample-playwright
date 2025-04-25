@@ -44,7 +44,9 @@ export default class BasePage {
     const manageData = this.page.locator("h1", {
       hasText: "This site asks for consent to use your data",
     });
-    await expect(manageData).toBeVisible({ timeout: 15000 });
+    if (await manageData.count() === 0) {
+      return;
+    }
     await manageData.click();
     const confirm = this.page.locator("button", { hasText: "Consent" });
     await confirm.click();

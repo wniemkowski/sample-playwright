@@ -1,4 +1,4 @@
-import { expect, test } from "../pageObjects/pageFixture";
+import { expect, test } from "../../pageObjects/pageFixture";
 
 [
   { loanAmount: "2500000", interestRate: "10", tenure: "10" },

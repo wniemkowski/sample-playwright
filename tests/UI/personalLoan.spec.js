@@ -1,4 +1,4 @@
-import { expect, test } from "../pageObjects/pageFixture";
+import { expect, test } from "../../pageObjects/pageFixture";
 
 test(`Renders bar chart`, async ({ personalLoanPage }) => {
   // given
