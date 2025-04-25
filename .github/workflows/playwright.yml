@@ -1,9 +1,11 @@
 name: Playwright Tests
+
 on:
   push:
     branches: ["**"]
   pull_request:
     branches: ["**"]
+
 jobs:
   playwright_test:
     name: Playwright Test
@@ -28,7 +30,7 @@ jobs:
       - uses: actions/upload-artifact@v4
         if: ${{ !cancelled() }}
         with:
-          name: playwright-report
+          name: playwright-report-${{ matrix.shardIndex }}
           path: playwright-report/
           retention-days: 30
 
@@ -37,26 +39,22 @@ jobs:
     needs: playwright_test
     name: Reporting
     runs-on: ubuntu-latest
-
     steps:
       - uses: actions/checkout@v4
-      - name: Download blob reports from GitHub Actions Artifacts
-        uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@v4
         with:
           pattern: playwright-report-*
           merge-multiple: true
-          path: playwright-report
+          path: playwright-reports
       - name: Install dependencies
         run: npm ci
-
       - name: Merge into HTML Report
-        run: npx playwright merge-reports --reporter html ./playwright-report-*/index.html ./playwright-report/index.html
-
-      - name: Upload HTML Report
+        run: npx playwright merge-reports --reporter html ./playwright-reports
+      - name: Upload Final HTML Report
         uses: actions/upload-artifact@v4
         with:
-          name: playwright-report
-
-      - name: summary
+          name: merged-playwright-report
+          path: playwright-report/
+      - name: Summary
         run: |
-          echo "## [Playwright Report](./playwright-report/index.html)" >> $GITHUB_STEP_SUMMARY
+          echo "## [Playwright HTML Report](./playwright-report/index.html)" >> $GITHUB_STEP_SUMMARY
