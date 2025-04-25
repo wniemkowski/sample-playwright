@@ -11,6 +11,7 @@ jobs:
     name: Playwright Test
     timeout-minutes: 60
     runs-on: ubuntu-latest
+    container: http://mcr.microsoft.com/playwright:v1.52.0-jammy
     strategy:
       fail-fast: false
       matrix:
