@@ -35,17 +35,17 @@ export default class BasePage {
 
   async goto(path = "/") {
     await this.page.goto(path);
-    await this.dismissCookiePopup();
+    await this.clickConsentOnDataPopupIfAppears();
   }
 
-  async dismissCookiePopup() {
+  async clickConsentOnDataPopupIfAppears() {
     const manageData = this.page.locator("h1", {
       hasText: "This site asks for consent to use your data",
     });
-    if (await manageData.count() === 0) {
+    if ((await manageData.count()) === 0) {
       return;
     }
-    await manageData.click();
+
     const confirm = this.page.locator("button", { hasText: "Consent" });
     await confirm.click();
   }

@@ -7,22 +7,23 @@ export default class BarChart extends BaseComponent {
     this.tooltip = this.component.locator(".highcharts-tooltip tspan");
   }
 
-  async getValues(barIndex) {
+  async getTooltipValues(barIndex) {
     let results = {};
+
     await this.component.scrollIntoViewIfNeeded();
     await this.bars.nth(barIndex).hover();
 
     let tooltipText = await this.tooltip.allTextContents();
-
     for (let row of tooltipText) {
       let [key, value] = row.split(":");
       results[key.trim()] = value.trim();
     }
+
     return results;
   }
 
   async getBarCount() {
-    // -1 for legend
+    // -1 for legend, probably can be fixed with better selector
     return (await this.bars.count()) - 1;
   }
 }

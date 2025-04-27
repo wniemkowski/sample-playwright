@@ -13,6 +13,7 @@ test(`Renders bar chart`, async ({ personalLoanPage }) => {
     loanAmount: "1000000",
     interestRate: "12",
     tenure: "5",
+    startMonth: "Jul",
   };
   await personalLoanPage.goto();
 
@@ -20,11 +21,11 @@ test(`Renders bar chart`, async ({ personalLoanPage }) => {
   await personalLoanPage.loanAmount.setSliderValue(inputData.loanAmount);
   await personalLoanPage.interestRate.setSliderValue(inputData.interestRate);
   await personalLoanPage.loanTenure.setSliderValue(inputData.tenure);
-  await personalLoanPage.setStartMonth("Jul");
+  await personalLoanPage.setStartMonth(inputData.startMonth);
 
   // then
   const numberOfBars = await personalLoanPage.barChart.getBarCount();
-  const barChartValues = await personalLoanPage.barChart.getValues(1);
-  expect(barChartValues).toEqual(expectedResult);
+  const barChartValues = await personalLoanPage.barChart.getTooltipValues(1);
   expect(numberOfBars).toEqual(expectedBarCount);
+  expect(barChartValues).toEqual(expectedResult);
 });
