@@ -2,7 +2,6 @@ import TabNavigation from "./components/tabNavigation.js";
 import InputWithSlider from "./components/inputWithSlider.js";
 import PieChart from "./components/pieChart.js";
 import BarChart from "./components/barChart.js";
-import { expect } from "@playwright/test";
 
 export default class BasePage {
   constructor(page) {
@@ -34,18 +33,19 @@ export default class BasePage {
     this.barChart = new BarChart(this.page.locator("#emibarchart"));
   }
 
-  // https://emicalculator.net/ as default for now, can be moved to environment variable later
-  async goto(path = "https://emicalculator.net/") {
+  async goto(path = "/") {
     await this.page.goto(path);
-    await this.dismissCookiePopup();
+    await this.clickConsentOnDataPopupIfAppears();
   }
 
-  async dismissCookiePopup() {
+  async clickConsentOnDataPopupIfAppears() {
     const manageData = this.page.locator("h1", {
       hasText: "This site asks for consent to use your data",
     });
-    await expect(manageData).toBeVisible();
-    await manageData.click();
+    if ((await manageData.count()) === 0) {
+      return;
+    }
+
     const confirm = this.page.locator("button", { hasText: "Consent" });
     await confirm.click();
   }
