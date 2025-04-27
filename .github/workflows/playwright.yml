@@ -15,6 +15,7 @@ jobs:
       HOME: /root
     timeout-minutes: 60
     runs-on: ubuntu-latest
+    # specified container to use for the job to not download browsers on every run. Need to be updated with playwright version
     container: mcr.microsoft.com/playwright:v1.52.0-noble
     strategy:
       fail-fast: false
@@ -57,11 +58,14 @@ jobs:
         run: npx playwright merge-reports --reporter html ./all-blob-reports
 
       - name: Upload HTML report
+        id: upload_report
         uses: actions/upload-artifact@v4
         with:
-          name: html-report--attempt-${{ github.run_attempt }}
+          name: html-report
           path: playwright-report
           retention-days: 14
       - name: Summary
+        id: summary
         run: |
-          echo "## [Playwright HTML Report](./playwright-report/index.html)" >> $GITHUB_STEP_SUMMARY
+          echo '## 📝 Playwright HTML report' >> "$GITHUB_STEP_SUMMARY"
+          echo '[Download / view report](${{ steps.upload_report.outputs.artifact-url }})' >> "$GITHUB_STEP_SUMMARY"
